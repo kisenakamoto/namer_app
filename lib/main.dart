@@ -34,6 +34,18 @@ class MyAppState extends ChangeNotifier {
     current = WordPair.random();
     notifyListeners();
   }
+
+  var favorites = <WordPair>[];
+
+  void toggleFavorite() {
+    if (favorites.contains(current)) {
+      favorites.remove(current);
+    } else {
+      favorites.add(current);
+    }
+    notifyListeners();
+  }
+
 }
 
 class MyHomePage extends StatelessWidget {
@@ -41,6 +53,14 @@ class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
     var pair = appState.current;   
+    var favs = appState.favorites;
+
+    IconData icon;
+    if (appState.favorites.contains(pair)) {
+      icon = Icons.favorite;
+    } else {
+      icon = Icons.favorite_border;
+    }
 
     return Scaffold(
       body: Center( //refactor Column (wrap with center)
@@ -55,11 +75,28 @@ class MyHomePage extends StatelessWidget {
             SizedBox(height: 10), //add space between BigCard and button
         
         
-            ElevatedButton(
-              onPressed: () {
-                appState.getNext();
-              },
-              child: Text('Next'),
+            Row(
+              mainAxisSize: MainAxisSize.min, //center row
+              children: [
+                ElevatedButton.icon(
+                  onPressed: () {
+                    appState.toggleFavorite();
+                    print("Added $favs to favorites" );
+                  },
+                  icon: Icon(icon),
+                  label: Text('Like'),
+                ),
+
+                SizedBox(width: 10),
+                
+                ElevatedButton(
+                  onPressed: () {
+                    appState.getNext();
+                  },
+                  child: Text('Next'),
+                ),
+                
+              ],
             ),
           ],
         ),
