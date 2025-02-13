@@ -69,40 +69,44 @@ class _MyHomePageState extends State<MyHomePage> {
       default:
         throw UnimplementedError('no widget for $selectedIndex');
     }
-    return Scaffold(
-      body: Row(
-        children: [
-          SafeArea( //Safearea-take only as much space as they need
-            child: NavigationRail(
-              extended: false, //true:labels will be shown
-              destinations: [
-                NavigationRailDestination(
-                  icon: Icon(Icons.home),
-                  label: Text('Home'),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Scaffold(
+          body: Row(
+            children: [
+              SafeArea( //Safearea-take only as much space as they need
+                child: NavigationRail(
+                  extended: constraints.maxWidth >= 600, //labels will be shown if constraints>
+                  destinations: [
+                    NavigationRailDestination(
+                      icon: Icon(Icons.home),
+                      label: Text('Home'),
+                    ),
+                    NavigationRailDestination(
+                      icon: Icon(Icons.favorite),
+                      label: Text('Favorites'),
+                    ),
+                  ],
+                  selectedIndex: selectedIndex,
+                  onDestinationSelected: (value) {
+        
+                    setState(() { //similar to the notifyListeners()
+                      selectedIndex = value;
+                    });
+        
+                  },
                 ),
-                NavigationRailDestination(
-                  icon: Icon(Icons.favorite),
-                  label: Text('Favorites'),
+              ),
+              Expanded( //Expanded-take as much of the remaining room as possible
+                child: Container(
+                  color: Theme.of(context).colorScheme.primaryContainer,
+                  child: page,
                 ),
-              ],
-              selectedIndex: selectedIndex,
-              onDestinationSelected: (value) {
-
-                setState(() { //similar to the notifyListeners()
-                  selectedIndex = value;
-                });
-
-              },
-            ),
+              ),
+            ],
           ),
-          Expanded( //Expanded-take as much of the remaining room as possible
-            child: Container(
-              color: Theme.of(context).colorScheme.primaryContainer,
-              child: page,
-            ),
-          ),
-        ],
-      ),
+        );
+      }
     );
   }
 }
