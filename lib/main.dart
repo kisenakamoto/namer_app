@@ -64,7 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
         page = GeneratorPage();
         break;
       case 1:
-        page = Placeholder();
+        page = FavoritesPage();
         break;
       default:
         throw UnimplementedError('no widget for $selectedIndex');
@@ -158,7 +158,6 @@ class GeneratorPage extends StatelessWidget {
   }
 }
 
-
 class BigCard extends StatelessWidget {
   const BigCard({
     super.key,
@@ -183,6 +182,37 @@ class BigCard extends StatelessWidget {
         semanticsLabel: "${pair.first} ${pair.second}", //for screenreader to read two words
         ),
       ),
+    );
+  }
+}
+
+class FavoritesPage extends StatelessWidget {
+  const FavoritesPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    var appState = context.watch<MyAppState>();
+    var favs = appState.favorites;
+    final theme = Theme.of(context); //get app current theme
+    final style = theme.textTheme.displayMedium!.copyWith(
+      color: theme.colorScheme.onPrimary, //text size and color
+      );
+      
+
+    return Column(
+      children: [
+        Card( //refactored Padding (wrap with widget)
+          color: theme.colorScheme.primary, //card color
+          child: Padding( //refactored Text (wrap with padding)
+            padding: const EdgeInsets.all(20.0),
+            child: Text("Favorites: ",
+            style: style,
+            ),  
+          ),
+        ),
+        for (var msg in favs)
+            Text(msg.asPascalCase),
+      ],
     );
   }
 }
