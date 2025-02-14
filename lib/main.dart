@@ -193,25 +193,25 @@ class FavoritesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
     var favs = appState.favorites;
-    final theme = Theme.of(context); //get app current theme
-    final style = theme.textTheme.displayMedium!.copyWith(
-      color: theme.colorScheme.onPrimary, //text size and color
-      );
-      
 
-    return Column(
+    if (appState.favorites.isEmpty) {
+      return Center(
+        child: Text('No favorites yet.'),
+      );
+    }
+
+    return ListView(
       children: [
-        Card( //refactored Padding (wrap with widget)
-          color: theme.colorScheme.primary, //card color
-          child: Padding( //refactored Text (wrap with padding)
-            padding: const EdgeInsets.all(20.0),
-            child: Text("Favorites: ",
-            style: style,
-            ),  
-          ),
+        Padding(
+          padding: const EdgeInsets.all(20),
+          child: Text('You have '
+              '${appState.favorites.length} favorites:'),
         ),
-        for (var msg in favs)
-            Text(msg.asPascalCase),
+        for (var pair in appState.favorites)
+          ListTile(
+            leading: Icon(Icons.favorite),
+            title: Text(pair.asLowerCase),
+          ),
       ],
     );
   }
